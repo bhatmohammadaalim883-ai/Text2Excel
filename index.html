@@ -3,22 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>Text to Excel</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232f9e68'/%3E%3Crect x='8' y='9' width='24' height='22' rx='2' fill='none' stroke='%2307130d' stroke-width='2'/%3E%3Cpath d='M8 16.5h24M8 24h24M16 9v22' stroke='%2307130d' stroke-width='2'/%3E%3C/svg%3E">
 <meta name="description" content="Paste text, check the grid, and download it as an Excel (.xlsx) file. Everything runs in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #f2f4f3;
-    --panel: #ffffff;
-    --ink: #18231e;
-    --muted: #55655d;
-    --line: #d3dcd7;
-    --head: #e4ece8;
-    --green: #1d6f42;
-    --green-dark: #14532f;
-    --focus: #0b57d0;
+    color-scheme: dark;
+    --paper: #0f1512;
+    --panel: #161e1a;
+    --field: #111815;
+    --ink: #e6ede9;
+    --muted: #93a39a;
+    --line: #2a3630;
+    --head: #1f2a25;
+    --hover: #22302a;
+    --green: #2f9e68;
+    --green-hover: #3fb67a;
+    --on-green: #07130d;
+    --link: #6fd0a0;
+    --focus: #7db4ff;
     --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   }
@@ -35,6 +42,10 @@
   header { padding: 36px 0 24px; }
   h1 { margin: 0 0 6px; font-size: 1.9rem; font-weight: 600; letter-spacing: -0.01em; }
   header p { margin: 0; color: var(--muted); max-width: 60ch; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .brand h1 { margin: 0; }
+  .logo { flex: none; display: block; }
+  a { color: var(--link); }
 
   .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
   @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
@@ -50,10 +61,11 @@
   textarea {
     width: 100%; min-height: 280px; resize: vertical;
     font: 400 0.9rem/1.5 var(--mono);
-    color: var(--ink); background: #fbfcfb;
+    color: var(--ink); background: var(--field);
     border: 1px solid var(--line); border-radius: 4px; padding: 12px;
     white-space: pre; overflow: auto;
   }
+  textarea::placeholder, input::placeholder { color: #6b7a72; }
 
   .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; margin-top: 16px; }
   .controls .full { grid-column: 1 / -1; }
@@ -61,19 +73,19 @@
   label.field span { display: block; margin-bottom: 4px; }
   select, input[type="text"] {
     width: 100%; font: inherit; font-size: 0.9rem; color: var(--ink);
-    background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px;
+    background: var(--field); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px;
   }
   .check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
   .check input { width: 16px; height: 16px; accent-color: var(--green); }
 
   button, .btn {
     font: 500 0.9rem var(--sans); cursor: pointer; border-radius: 4px;
-    padding: 8px 14px; border: 1px solid var(--line); background: #fff; color: var(--ink);
+    padding: 8px 14px; border: 1px solid var(--line); background: var(--head); color: var(--ink);
   }
-  button:hover, .btn:hover { background: var(--head); }
-  .primary { background: var(--green); border-color: var(--green); color: #fff; }
-  .primary:hover { background: var(--green-dark); }
-  .primary:disabled { background: #a9b9b0; border-color: #a9b9b0; cursor: not-allowed; }
+  button:hover, .btn:hover { background: var(--hover); }
+  .primary { background: var(--green); border-color: var(--green); color: var(--on-green); font-weight: 600; }
+  .primary:hover { background: var(--green-hover); }
+  .primary:disabled { background: var(--head); border-color: var(--line); color: #6b7a72; cursor: not-allowed; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
@@ -89,7 +101,7 @@
     position: sticky; left: 0; background: var(--head); font-weight: 500; color: var(--muted); text-align: right; width: 1%;
   }
   .sheet td.num { text-align: right; }
-  .sheet tr.is-header td { font-weight: 600; background: #f3f8f5; }
+  .sheet tr.is-header td { font-weight: 600; background: #1b2a23; }
   .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
   .notice { padding: 10px 16px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); }
   footer { margin-top: 28px; font-size: 0.85rem; color: var(--muted); }
@@ -98,7 +110,14 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Text to Excel</h1>
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" width="40" height="40" role="img" aria-label="Text to Excel logo">
+        <rect width="40" height="40" rx="8" fill="#2f9e68"/>
+        <rect x="8" y="9" width="24" height="22" rx="2" fill="none" stroke="#07130d" stroke-width="2"/>
+        <path d="M8 16.5h24M8 24h24M16 9v22" stroke="#07130d" stroke-width="2"/>
+      </svg>
+      <h1>Text to Excel</h1>
+    </div>
     <p>Paste text, check the grid, then download an .xlsx file. Everything runs in your browser, so your text is never uploaded.</p>
   </header>
 
