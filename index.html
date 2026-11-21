@@ -4,9 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Text to Excel</title>
+<title>Text to Excel Converter: Paste Text, Download .xlsx | Free and Private</title>
+<meta name="description" content="Free text to Excel converter. Paste comma, tab or space-separated text, preview the grid, and download an .xlsx file. Runs in your browser, nothing is uploaded.">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Text to Excel Converter: Paste Text, Download .xlsx">
+<meta property="og:description" content="Paste comma, tab or space-separated text, preview the grid, and download an Excel file. Free, private, no signup.">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/">
+<meta name="twitter:card" content="summary">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232f9e68'/%3E%3Crect x='8' y='9' width='24' height='22' rx='2' fill='none' stroke='%2307130d' stroke-width='2'/%3E%3Cpath d='M8 16.5h24M8 24h24M16 9v22' stroke='%2307130d' stroke-width='2'/%3E%3C/svg%3E">
-<meta name="description" content="Paste text, check the grid, and download it as an Excel (.xlsx) file. Everything runs in your browser.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Text to Excel",
+  "url": "https://YOUR-DOMAIN.com/",
+  "description": "Free online tool that converts pasted text into an Excel (.xlsx) spreadsheet. Runs in the browser.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -104,7 +122,21 @@
   .sheet tr.is-header td { font-weight: 600; background: #1b2a23; }
   .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
   .notice { padding: 10px 16px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); }
-  footer { margin-top: 28px; font-size: 0.85rem; color: var(--muted); }
+
+  .info { margin-top: 48px; max-width: 720px; }
+  .info h2 { margin: 32px 0 10px; font-size: 1.25rem; font-weight: 600; }
+  .info h2:first-child { margin-top: 0; }
+  .info h3 { margin: 20px 0 4px; font-size: 1rem; font-weight: 600; }
+  .info p, .info li { color: var(--muted); max-width: 70ch; }
+  .info p { margin: 0 0 10px; }
+  .info ol { padding-left: 20px; margin: 0 0 10px; }
+  .info li { margin-bottom: 6px; }
+  .info pre {
+    margin: 8px 0 10px; padding: 12px; overflow: auto;
+    background: var(--field); border: 1px solid var(--line); border-radius: 4px;
+    font: 400 0.85rem/1.5 var(--mono); color: var(--ink);
+  }
+  footer { margin-top: 40px; font-size: 0.85rem; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -118,71 +150,117 @@
       </svg>
       <h1>Text to Excel</h1>
     </div>
-    <p>Paste text, check the grid, then download an .xlsx file. Everything runs in your browser, so your text is never uploaded.</p>
+    <p>Free text to Excel converter. Paste text, check the grid, then download an .xlsx file. Everything runs in your browser, so your text is never uploaded.</p>
   </header>
 
-  <main class="layout">
-    <section class="card" aria-labelledby="in-title">
-      <div class="card-head">
-        <h2 id="in-title">Your text</h2>
-        <span class="meta" id="count"></span>
-      </div>
-      <div class="card-body">
-        <label for="input" class="meta" style="display:block;margin-bottom:6px">Paste text here, or open a .txt or .csv file</label>
-        <textarea id="input" spellcheck="false" placeholder="Name, Age, City&#10;Ana, 28, Lisbon&#10;Omar, 34, Cairo"></textarea>
-
-        <div class="row">
-          <label class="btn" for="file" style="display:inline-block">Open file</label>
-          <input id="file" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" hidden>
-          <button type="button" id="sample">Load example</button>
-          <button type="button" id="clear">Clear</button>
+  <main>
+    <div class="layout">
+      <section class="card" aria-labelledby="in-title">
+        <div class="card-head">
+          <h2 id="in-title">Your text</h2>
+          <span class="meta" id="count"></span>
         </div>
+        <div class="card-body">
+          <label for="input" class="meta" style="display:block;margin-bottom:6px">Paste text here, or open a .txt or .csv file</label>
+          <textarea id="input" spellcheck="false" placeholder="Name, Age, City&#10;Ana, 28, Lisbon&#10;Omar, 34, Cairo"></textarea>
 
-        <div class="controls">
-          <label class="field">
-            <span>Split columns by</span>
-            <select id="delim">
-              <option value="auto">Auto-detect</option>
-              <option value="tab">Tab</option>
-              <option value="comma">Comma</option>
-              <option value="semicolon">Semicolon</option>
-              <option value="pipe">Pipe ( | )</option>
-              <option value="spaces">2 or more spaces</option>
-              <option value="space">Single space</option>
-              <option value="custom">Custom…</option>
-              <option value="none">Don't split (one column)</option>
-            </select>
-          </label>
-          <label class="field" id="customWrap" hidden>
-            <span>Custom separator</span>
-            <input type="text" id="custom" placeholder="e.g. :: or ;">
-          </label>
-          <label class="field">
-            <span>Sheet name</span>
-            <input type="text" id="sheetName" value="Sheet1" maxlength="31">
-          </label>
-          <label class="field">
-            <span>File name</span>
-            <input type="text" id="fileName" value="converted">
-          </label>
-          <label class="check full"><input type="checkbox" id="header" checked> First row is a header</label>
-          <label class="check full"><input type="checkbox" id="numbers" checked> Save numbers as numbers (not text)</label>
-          <label class="check full"><input type="checkbox" id="skipEmpty" checked> Skip empty lines</label>
-          <label class="check full"><input type="checkbox" id="trim" checked> Trim spaces around cells</label>
-        </div>
-      </div>
-    </section>
+          <div class="row">
+            <label class="btn" for="file" style="display:inline-block">Open file</label>
+            <input id="file" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" hidden>
+            <button type="button" id="sample">Load example</button>
+            <button type="button" id="clear">Clear</button>
+          </div>
 
-    <section class="card" aria-labelledby="out-title">
-      <div class="card-head">
-        <div>
-          <h2 id="out-title">Preview</h2>
-          <div class="meta" id="status" aria-live="polite">No data yet</div>
+          <div class="controls">
+            <label class="field">
+              <span>Split columns by</span>
+              <select id="delim">
+                <option value="auto">Auto-detect</option>
+                <option value="tab">Tab</option>
+                <option value="comma">Comma</option>
+                <option value="semicolon">Semicolon</option>
+                <option value="pipe">Pipe ( | )</option>
+                <option value="spaces">2 or more spaces</option>
+                <option value="space">Single space</option>
+                <option value="custom">Custom…</option>
+                <option value="none">Don't split (one column)</option>
+              </select>
+            </label>
+            <label class="field" id="customWrap" hidden>
+              <span>Custom separator</span>
+              <input type="text" id="custom" placeholder="e.g. :: or ;">
+            </label>
+            <label class="field">
+              <span>Sheet name</span>
+              <input type="text" id="sheetName" value="Sheet1" maxlength="31">
+            </label>
+            <label class="field">
+              <span>File name</span>
+              <input type="text" id="fileName" value="converted">
+            </label>
+            <label class="check full"><input type="checkbox" id="header" checked> First row is a header</label>
+            <label class="check full"><input type="checkbox" id="numbers" checked> Save numbers as numbers (not text)</label>
+            <label class="check full"><input type="checkbox" id="skipEmpty" checked> Skip empty lines</label>
+            <label class="check full"><input type="checkbox" id="trim" checked> Trim spaces around cells</label>
+          </div>
         </div>
-        <button type="button" id="download" class="primary" disabled>Download .xlsx</button>
-      </div>
-      <div id="preview"><div class="empty">Paste text on the left and your sheet will appear here.</div></div>
-      <div class="notice" id="notice" hidden></div>
+      </section>
+
+      <section class="card" aria-labelledby="out-title">
+        <div class="card-head">
+          <div>
+            <h2 id="out-title">Preview</h2>
+            <div class="meta" id="status" aria-live="polite">No data yet</div>
+          </div>
+          <button type="button" id="download" class="primary" disabled>Download .xlsx</button>
+        </div>
+        <div id="preview"><div class="empty">Paste text on the left and your sheet will appear here.</div></div>
+        <div class="notice" id="notice" hidden></div>
+      </section>
+    </div>
+
+    <section class="info" aria-labelledby="how-title">
+      <h2 id="how-title">How to convert text to Excel</h2>
+      <ol>
+        <li>Paste your text into the box, or open a .txt or .csv file.</li>
+        <li>The tool detects whether your columns are separated by commas, tabs, semicolons, pipes, or spaces. If the preview looks wrong, choose the separator yourself.</li>
+        <li>Check the preview grid, set a sheet name and file name if you like, then click Download .xlsx.</li>
+      </ol>
+
+      <h2>Examples</h2>
+      <h3>Comma-separated text (CSV)</h3>
+      <pre><code>Name,Age,City
+Ana,28,Lisbon
+Omar,34,Cairo</code></pre>
+      <p>This becomes a sheet with three columns (Name, Age, City) and two rows of data. Values in quotes, such as "Smith, Jo", stay in one cell even though they contain a comma.</p>
+
+      <h3>Tab-separated text</h3>
+      <p>Text copied from a web page table, a Google Sheet, or another spreadsheet is usually separated by tabs. Paste it as it is and each tab starts a new column.</p>
+
+      <h3>Columns aligned with spaces</h3>
+      <pre><code>Item      Qty   Price
+Pens      10    2.50
+Notebooks 4     6.00</code></pre>
+      <p>Choose "2 or more spaces" so that text with single spaces, like "Black Pens", stays in one cell.</p>
+
+      <h2>Frequently asked questions</h2>
+      <h3>Is this text to Excel converter free?</h3>
+      <p>Yes. There is no signup and no limit on how many files you convert.</p>
+
+      <h3>Is my text uploaded anywhere?</h3>
+      <p>No. The conversion happens in your browser, so your text never leaves your device.</p>
+
+      <h3>Which separators are supported?</h3>
+      <p>Tab, comma, semicolon, pipe, two or more spaces, a single space, or any custom separator you type. Auto-detect picks the most likely one for you.</p>
+
+      <h3>Can I convert a CSV file to Excel?</h3>
+      <p>Yes. Click Open file, choose your .csv or .txt file, and download the result as .xlsx.</p>
+
+      <h3>Why do numbers like 007 keep their zeros?</h3>
+      <p>Values with leading zeros, such as 007 or some phone numbers, stay as text so that no digits are lost. Turn off "Save numbers as numbers" if you want every value kept as text.</p>
+
+      <h3>How many rows can I convert?</h3>
+      <p>The preview shows the first 200 rows, and the downloaded file contains all of them. Very large inputs depend on your browser's memory.</p>
     </section>
   </main>
 
