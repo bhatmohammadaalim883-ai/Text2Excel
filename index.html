@@ -1,517 +1,1257 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Text to Excel Converter: Paste Text, Download .xlsx | Free and Private</title>
-<meta name="google-site-verification" content="u6hJB-0KJ5YWv6zHl82RIQbMaNx_WtTi-Li_fQdyOaE" />
-<meta name="description" content="Free text to Excel converter. Paste comma, tab or space-separated text, preview the grid, and download an .xlsx file. Runs in your browser, nothing is uploaded.">
-<link rel="canonical" href="https://text2excel.github.io/">
-<link rel="sitemap" type="application/xml" href="https://text2excel.github.io/sitemap.xml">
+<meta name="theme-color" content="#0f1512">
+<title>Text2Excel - Text to Excel and Excel to Text Converter</title>
+<meta name="description" content="Free two-way converter. Convert text to Excel or Excel spreadsheets to plain text, CSV, JSON and Markdown. Private browser-based conversion.">
+<link rel="canonical" href="https://text2excel.devs.surf/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Text to Excel Converter: Paste Text, Download .xlsx">
-<meta property="og:description" content="Paste comma, tab or space-separated text, preview the grid, and download an Excel file. Free, private, no signup.">
-<meta property="og:url" content="https://text2excel.github.io/">
-<meta name="twitter:card" content="summary">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232f9e68'/%3E%3Crect x='8' y='9' width='24' height='22' rx='2' fill='none' stroke='%2307130d' stroke-width='2'/%3E%3Cpath d='M8 16.5h24M8 24h24M16 9v22' stroke='%2307130d' stroke-width='2'/%3E%3C/svg%3E">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Text to Excel",
-  "url": "https://text2excel.github.io/",
-  "description": "Free online tool that converts pasted text into an Excel (.xlsx) spreadsheet. Runs in the browser.",
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Any (web browser)",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-}
-</script>
+<meta property="og:title" content="Text2Excel - Two-Way Converter">
+<meta property="og:description" content="Convert text to Excel and Excel to text in multiple formats. Free and private.">
+<meta property="og:url" content="https://text2excel.devs.surf/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232f9e68'/%3E%3Cpath d='M8 9h24v22H8zM8 16h24M8 24h24M16 9v22' fill='none' stroke='%2307130d' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    color-scheme: dark;
-    --paper: #0f1512;
-    --panel: #161e1a;
-    --field: #111815;
-    --ink: #e6ede9;
-    --muted: #93a39a;
-    --line: #2a3630;
-    --head: #1f2a25;
-    --hover: #22302a;
-    --green: #2f9e68;
-    --green-hover: #3fb67a;
-    --on-green: #07130d;
-    --link: #6fd0a0;
-    --focus: #7db4ff;
-    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    line-height: 1.5;
-    padding: 0 20px 48px;
-  }
-  .wrap { max-width: 1200px; margin: 0 auto; }
-  header { padding: 36px 0 24px; }
-  h1 { margin: 0 0 6px; font-size: 1.9rem; font-weight: 600; letter-spacing: -0.01em; }
-  header p { margin: 0; color: var(--muted); max-width: 60ch; }
-  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-  .brand h1 { margin: 0; }
-  .logo { flex: none; display: block; }
-  a { color: var(--link); }
-
-  .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
-  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
-
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
-  .card-head {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 16px; border-bottom: 1px solid var(--line); min-height: 56px;
-  }
-  .card-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
-  .card-body { padding: 16px; }
-
-  textarea {
-    width: 100%; min-height: 280px; resize: vertical;
-    font: 400 0.9rem/1.5 var(--mono);
-    color: var(--ink); background: var(--field);
-    border: 1px solid var(--line); border-radius: 4px; padding: 12px;
-    white-space: pre; overflow: auto;
-  }
-  textarea::placeholder, input::placeholder { color: #6b7a72; }
-
-  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; margin-top: 16px; }
-  .controls .full { grid-column: 1 / -1; }
-  label.field { display: block; font-size: 0.85rem; font-weight: 500; }
-  label.field span { display: block; margin-bottom: 4px; }
-  select, input[type="text"] {
-    width: 100%; font: inherit; font-size: 0.9rem; color: var(--ink);
-    background: var(--field); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px;
-  }
-  .check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-  .check input { width: 16px; height: 16px; accent-color: var(--green); }
-
-  button, .btn {
-    font: 500 0.9rem var(--sans); cursor: pointer; border-radius: 4px;
-    padding: 8px 14px; border: 1px solid var(--line); background: var(--head); color: var(--ink);
-  }
-  button:hover, .btn:hover { background: var(--hover); }
-  .primary { background: var(--green); border-color: var(--green); color: var(--on-green); font-weight: 600; }
-  .primary:hover { background: var(--green-hover); }
-  .primary:disabled { background: var(--head); border-color: var(--line); color: #6b7a72; cursor: not-allowed; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-
-  .meta { font-size: 0.85rem; color: var(--muted); }
-  .grid-scroll { overflow: auto; max-height: 560px; }
-  table.sheet { border-collapse: collapse; font: 400 0.85rem/1.4 var(--mono); min-width: 100%; }
-  .sheet th, .sheet td { border: 1px solid var(--line); padding: 4px 10px; white-space: pre; text-align: left; }
-  .sheet thead th {
-    position: sticky; top: 0; background: var(--head); font-weight: 500; color: var(--muted); text-align: center;
-  }
-  .sheet tbody th {
-    position: sticky; left: 0; background: var(--head); font-weight: 500; color: var(--muted); text-align: right; width: 1%;
-  }
-  .sheet td.num { text-align: right; }
-  .sheet tr.is-header td { font-weight: 600; background: #1b2a23; }
-  .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
-  .notice { padding: 10px 16px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); }
-
-  .info { margin-top: 48px; max-width: 720px; }
-  .info h2 { margin: 32px 0 10px; font-size: 1.25rem; font-weight: 600; }
-  .info h2:first-child { margin-top: 0; }
-  .info h3 { margin: 20px 0 4px; font-size: 1rem; font-weight: 600; }
-  .info p, .info li { color: var(--muted); max-width: 70ch; }
-  .info p { margin: 0 0 10px; }
-  .info ol { padding-left: 20px; margin: 0 0 10px; }
-  .info li { margin-bottom: 6px; }
-  .info pre {
-    margin: 8px 0 10px; padding: 12px; overflow: auto;
-    background: var(--field); border: 1px solid var(--line); border-radius: 4px;
-    font: 400 0.85rem/1.5 var(--mono); color: var(--ink);
-  }
-  footer { margin-top: 40px; font-size: 0.85rem; color: var(--muted); }
+:root {
+  color-scheme: dark;
+  --paper:#0f1512;
+  --panel:#161e1a;
+  --field:#111815;
+  --ink:#e6ede9;
+  --muted:#93a39a;
+  --line:#2a3630;
+  --head:#1f2a25;
+  --hover:#22302a;
+  --green:#2f9e68;
+  --green-hover:#3fb67a;
+  --on-green:#07130d;
+  --link:#6fd0a0;
+  --focus:#7db4ff;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.5;
+  padding:0 20px 48px;
+}
+.wrap{max-width:1200px;margin:auto}
+header{padding:36px 0 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{flex:none}
+h1{margin:0;font-size:1.9rem;font-weight:600}
+header p{margin:6px 0 0;color:var(--muted);max-width:65ch}
+a{color:var(--link)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;padding:12px 16px;
+  border-bottom:1px solid var(--line);min-height:56px
+}
+.card-head h2{margin:0;font-size:1rem}
+.card-body{padding:16px}
+.layout{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:20px;align-items:start
+}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.tab{
+  padding:10px 18px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:5px;
+  cursor:pointer;font-weight:600
+}
+.tab.active{background:var(--green);border-color:var(--green);color:var(--on-green)}
+.panel[hidden]{display:none}
+textarea{
+  width:100%;min-height:280px;resize:vertical;
+  font:400 .9rem/1.5 var(--mono);color:var(--ink);
+  background:var(--field);border:1px solid var(--line);
+  border-radius:4px;padding:12px;white-space:pre;overflow:auto
+}
+textarea::placeholder,input::placeholder{color:#6b7a72}
+.controls{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px 16px;margin-top:16px
+}
+.controls .full{grid-column:1/-1}
+label.field{display:block;font-size:.85rem;font-weight:500}
+label.field span{display:block;margin-bottom:4px}
+select,input[type=text]{
+  width:100%;font:inherit;font-size:.9rem;color:var(--ink);
+  background:var(--field);border:1px solid var(--line);
+  border-radius:4px;padding:8px 10px
+}
+.check{display:flex;align-items:center;gap:8px;font-size:.9rem}
+.check input{width:16px;height:16px;accent-color:var(--green)}
+button,.btn{
+  font:500 .9rem var(--sans);cursor:pointer;border-radius:4px;
+  padding:8px 14px;border:1px solid var(--line);
+  background:var(--head);color:var(--ink)
+}
+button:hover,.btn:hover{background:var(--hover)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:var(--green);border-color:var(--green);color:var(--on-green);font-weight:600}
+.primary:hover{background:var(--green-hover)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.meta{font-size:.85rem;color:var(--muted)}
+.grid-scroll{overflow:auto;max-height:560px}
+table.sheet{border-collapse:collapse;font:400 .85rem/1.4 var(--mono);min-width:100%}
+.sheet th,.sheet td{border:1px solid var(--line);padding:4px 10px;white-space:pre;text-align:left}
+.sheet thead th{position:sticky;top:0;background:var(--head);font-weight:500;color:var(--muted);text-align:center}
+.sheet tbody th{position:sticky;left:0;background:var(--head);font-weight:500;color:var(--muted);text-align:right;width:1%}
+.sheet td.num{text-align:right}
+.sheet tr.is-header td{font-weight:600;background:#1b2a23}
+.empty{padding:48px 16px;text-align:center;color:var(--muted)}
+.notice{padding:10px 16px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.info{margin-top:48px;max-width:760px}
+.info h2{margin:32px 0 10px;font-size:1.25rem}
+.info h2:first-child{margin-top:0}
+.info h3{margin:20px 0 4px;font-size:1rem}
+.info p,.info li{color:var(--muted);max-width:70ch}
+.info p{margin:0 0 10px}
+.info ol{padding-left:20px}
+.info li{margin-bottom:6px}
+.info pre{margin:8px 0 10px;padding:12px;overflow:auto;background:var(--field);border:1px solid var(--line);border-radius:4px;font:400 .85rem/1.5 var(--mono)}
+.sheet-output{margin-top:16px}
+.sheet-output h3{font-size:.95rem;margin:16px 0 6px}
+.sheet-output textarea{min-height:160px}
+.output-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.status{margin-top:10px;color:var(--muted);font-size:.85rem}
+footer{margin-top:40px;font-size:.85rem;color:var(--muted)}
+@media(max-width:520px){
+  body{padding:0 12px 36px}
+  header{padding-top:24px}
+  h1{font-size:1.55rem}
+  .controls{grid-template-columns:1fr}
+}
 </style>
 </head>
+
 <body>
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <svg class="logo" viewBox="0 0 40 40" width="40" height="40" role="img" aria-label="Text to Excel logo">
-        <rect width="40" height="40" rx="8" fill="#2f9e68"/>
-        <rect x="8" y="9" width="24" height="22" rx="2" fill="none" stroke="#07130d" stroke-width="2"/>
-        <path d="M8 16.5h24M8 24h24M16 9v22" stroke="#07130d" stroke-width="2"/>
-      </svg>
-      <h1>Text to Excel</h1>
-    </div>
-    <p>Free text to Excel converter. Paste text, check the grid, then download an .xlsx file. Everything runs in your browser, so your text is never uploaded.</p>
-  </header>
 
-  <main>
-    <div class="layout">
-      <section class="card" aria-labelledby="in-title">
-        <div class="card-head">
-          <h2 id="in-title">Your text</h2>
-          <span class="meta" id="count"></span>
-        </div>
-        <div class="card-body">
-          <label for="input" class="meta" style="display:block;margin-bottom:6px">Paste text here, or open a .txt or .csv file</label>
-          <textarea id="input" spellcheck="false" placeholder="Name, Age, City&#10;Ana, 28, Lisbon&#10;Omar, 34, Cairo"></textarea>
+<header>
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 40 40" width="40" height="40" role="img" aria-label="Text2Excel logo">
+      <rect width="40" height="40" rx="8" fill="#2f9e68"/>
+      <rect x="8" y="9" width="24" height="22" rx="2" fill="none" stroke="#07130d" stroke-width="2"/>
+      <path d="M8 16.5h24M8 24h24M16 9v22" stroke="#07130d" stroke-width="2"/>
+    </svg>
+    <h1>Text2Excel</h1>
+  </div>
+  <p>Convert text to Excel or Excel spreadsheets to text. Free, simple and private. Your files are processed directly in your browser.</p>
+</header>
 
-          <div class="row">
-            <label class="btn" for="file" style="display:inline-block">Open file</label>
-            <input id="file" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" hidden>
-            <button type="button" id="sample">Load example</button>
-            <button type="button" id="clear">Clear</button>
-          </div>
+<main>
 
-          <div class="controls">
-            <label class="field">
-              <span>Split columns by</span>
-              <select id="delim">
-                <option value="auto">Auto-detect</option>
-                <option value="tab">Tab</option>
-                <option value="comma">Comma</option>
-                <option value="semicolon">Semicolon</option>
-                <option value="pipe">Pipe ( | )</option>
-                <option value="spaces">2 or more spaces</option>
-                <option value="space">Single space</option>
-                <option value="custom">Custom…</option>
-                <option value="none">Don't split (one column)</option>
-              </select>
-            </label>
-            <label class="field" id="customWrap" hidden>
-              <span>Custom separator</span>
-              <input type="text" id="custom" placeholder="e.g. :: or ;">
-            </label>
-            <label class="field">
-              <span>Sheet name</span>
-              <input type="text" id="sheetName" value="Sheet1" maxlength="31">
-            </label>
-            <label class="field">
-              <span>File name</span>
-              <input type="text" id="fileName" value="converted">
-            </label>
-            <label class="check full"><input type="checkbox" id="header" checked> First row is a header</label>
-            <label class="check full"><input type="checkbox" id="numbers" checked> Save numbers as numbers (not text)</label>
-            <label class="check full"><input type="checkbox" id="skipEmpty" checked> Skip empty lines</label>
-            <label class="check full"><input type="checkbox" id="trim" checked> Trim spaces around cells</label>
-          </div>
-        </div>
-      </section>
+<div class="tabs" role="tablist" aria-label="Conversion type">
+  <button class="tab active" id="textTab" role="tab" aria-selected="true" aria-controls="textPanel">Text to Excel</button>
+  <button class="tab" id="excelTab" role="tab" aria-selected="false" aria-controls="excelPanel">Excel to Text</button>
+</div>
 
-      <section class="card" aria-labelledby="out-title">
-        <div class="card-head">
-          <div>
-            <h2 id="out-title">Preview</h2>
-            <div class="meta" id="status" aria-live="polite">No data yet</div>
-          </div>
-          <button type="button" id="download" class="primary" disabled>Download .xlsx</button>
-        </div>
-        <div id="preview"><div class="empty">Paste text on the left and your sheet will appear here.</div></div>
-        <div class="notice" id="notice" hidden></div>
-      </section>
+<!-- TEXT TO EXCEL -->
+
+<section class="panel" id="textPanel" role="tabpanel" aria-labelledby="textTab">
+<div class="layout">
+
+<section class="card" aria-labelledby="in-title">
+  <div class="card-head">
+    <h2 id="in-title">Your text</h2>
+    <span class="meta" id="count"></span>
+  </div>
+  <div class="card-body">
+    <label for="input" class="meta" style="display:block;margin-bottom:6px">Paste text here, or open a .txt or .csv file</label>
+    <textarea id="input" spellcheck="false" placeholder="Name, Age, City&#10;Ana, 28, Lisbon&#10;Omar, 34, Cairo"></textarea>
+
+    <div class="row">
+      <label class="btn" for="file" style="display:inline-block">Open file</label>
+      <input id="file" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" hidden>
+      <button type="button" id="sample">Load example</button>
+      <button type="button" id="clear">Clear</button>
     </div>
 
-    <section class="info" aria-labelledby="how-title">
-      <h2 id="how-title">How to convert text to Excel</h2>
-      <ol>
-        <li>Paste your text into the box, or open a .txt or .csv file.</li>
-        <li>The tool detects whether your columns are separated by commas, tabs, semicolons, pipes, or spaces. If the preview looks wrong, choose the separator yourself.</li>
-        <li>Check the preview grid, set a sheet name and file name if you like, then click Download .xlsx.</li>
-      </ol>
+    <div class="controls">
+      <label class="field">
+        <span>Split columns by</span>
+        <select id="delim">
+          <option value="auto">Auto-detect</option>
+          <option value="tab">Tab</option>
+          <option value="comma">Comma</option>
+          <option value="semicolon">Semicolon</option>
+          <option value="pipe">Pipe ( | )</option>
+          <option value="spaces">2 or more spaces</option>
+          <option value="space">Single space</option>
+          <option value="custom">Custom…</option>
+          <option value="none">Don't split (one column)</option>
+        </select>
+      </label>
 
-      <h2>Examples</h2>
-      <h3>Comma-separated text (CSV)</h3>
-      <pre><code>Name,Age,City
-Ana,28,Lisbon
-Omar,34,Cairo</code></pre>
-      <p>This becomes a sheet with three columns (Name, Age, City) and two rows of data. Values in quotes, such as "Smith, Jo", stay in one cell even though they contain a comma.</p>
+      <label class="field" id="customWrap" hidden>
+        <span>Custom separator</span>
+        <input type="text" id="custom" placeholder="e.g. :: or ;">
+      </label>
 
-      <h3>Tab-separated text</h3>
-      <p>Text copied from a web page table, a Google Sheet, or another spreadsheet is usually separated by tabs. Paste it as it is and each tab starts a new column.</p>
+      <label class="field">
+        <span>Sheet name</span>
+        <input type="text" id="sheetName" value="Sheet1" maxlength="31">
+      </label>
 
-      <h3>Columns aligned with spaces</h3>
-      <pre><code>Item      Qty   Price
-Pens      10    2.50
-Notebooks 4     6.00</code></pre>
-      <p>Choose "2 or more spaces" so that text with single spaces, like "Black Pens", stays in one cell.</p>
+      <label class="field">
+        <span>File name</span>
+        <input type="text" id="fileName" value="converted">
+      </label>
 
-      <h2>Frequently asked questions</h2>
-      <h3>Is this text to Excel converter free?</h3>
-      <p>Yes. There is no signup and no limit on how many files you convert.</p>
+      <label class="check full"><input type="checkbox" id="header" checked> First row is a header</label>
+      <label class="check full"><input type="checkbox" id="numbers" checked> Save numbers as numbers (not text)</label>
+      <label class="check full"><input type="checkbox" id="skipEmpty" checked> Skip empty lines</label>
+      <label class="check full"><input type="checkbox" id="trim" checked> Trim spaces around cells</label>
+    </div>
+  </div>
+</section>
 
-      <h3>Is my text uploaded anywhere?</h3>
-      <p>No. The conversion happens in your browser, so your text never leaves your device.</p>
+<section class="card" aria-labelledby="out-title">
+  <div class="card-head">
+    <div>
+      <h2 id="out-title">Preview</h2>
+      <div class="meta" id="status" aria-live="polite">No data yet</div>
+    </div>
+    <button type="button" id="download" class="primary" disabled>Download .xlsx</button>
+  </div>
+  <div id="preview"><div class="empty">Paste text on the left and your sheet will appear here.</div></div>
+  <div class="notice" id="notice" hidden></div>
+</section>
 
-      <h3>Which separators are supported?</h3>
-      <p>Tab, comma, semicolon, pipe, two or more spaces, a single space, or any custom separator you type. Auto-detect picks the most likely one for you.</p>
+</div>
+</section>
 
-      <h3>Can I convert a CSV file to Excel?</h3>
-      <p>Yes. Click Open file, choose your .csv or .txt file, and download the result as .xlsx.</p>
+<!-- EXCEL TO TEXT -->
 
-      <h3>Why do numbers like 007 keep their zeros?</h3>
-      <p>Values with leading zeros, such as 007 or some phone numbers, stay as text so that no digits are lost. Turn off "Save numbers as numbers" if you want every value kept as text.</p>
+<section class="panel" id="excelPanel" role="tabpanel" aria-labelledby="excelTab" hidden>
 
-      <h3>How many rows can I convert?</h3>
-      <p>The preview shows the first 200 rows, and the downloaded file contains all of them. Very large inputs depend on your browser's memory.</p>
-    </section>
-  </main>
+<div class="layout">
 
-  <footer>Built with <a href="https://sheetjs.com/">SheetJS</a>. Preview shows the first 200 rows; the downloaded file contains all of them.</footer>
+<section class="card">
+  <div class="card-head">
+    <h2>Upload Excel file</h2>
+  </div>
+  <div class="card-body">
+    <p class="meta">Select an Excel workbook. All worksheets will be imported.</p>
+
+    <label class="btn" for="excelFile" style="display:inline-block">Choose Excel file</label>
+    <input type="file" id="excelFile" accept=".xlsx,.xls,.xlsm,.xlsb" hidden>
+
+    <div class="status" id="excelFileName" aria-live="polite">No file selected</div>
+    <div class="status" id="excelStatus" aria-live="polite">Upload an Excel file to begin.</div>
+
+    <div class="controls">
+      <label class="field full">
+        <span>Preview worksheet</span>
+        <select id="sheetSelect" disabled>
+          <option value="">No workbook loaded</option>
+        </select>
+      </label>
+
+      <label class="field full">
+        <span>Output format</span>
+        <select id="outputFormat" disabled>
+          <option value="plain">Plain Text (tab-separated)</option>
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+          <option value="markdown">Markdown Table</option>
+        </select>
+      </label>
+
+      <label class="check full">
+        <input type="checkbox" id="excelHeader" checked disabled>
+        First row contains column headers
+      </label>
+    </div>
+
+    <div class="row">
+      <button type="button" id="convertExcel" class="primary" disabled>Convert all sheets</button>
+      <button type="button" id="clearExcel" disabled>Clear workbook</button>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <div>
+      <h2>Worksheet preview</h2>
+      <div class="meta" id="excelPreviewStatus">No workbook loaded</div>
+    </div>
+  </div>
+  <div id="excelPreview">
+    <div class="empty">Upload an Excel workbook to preview its worksheets.</div>
+  </div>
+</section>
+
+</div>
+
+<section class="card sheet-output">
+  <div class="card-head">
+    <div>
+      <h2>Converted text</h2>
+      <div class="meta" id="outputStatus">Your converted output will appear here.</div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <textarea id="excelOutput" readonly placeholder="Your converted text will appear here..." style="min-height:260px"></textarea>
+    <div class="output-toolbar">
+      <button type="button" id="copyOutput" class="primary" disabled>Copy text</button>
+      <button type="button" id="downloadOutput" disabled>Download converted file</button>
+    </div>
+    <div class="status" id="copyStatus" aria-live="polite"></div>
+  </div>
+</section>
+
+</section>
+
+<section class="info">
+  <h2>How to use Text2Excel</h2>
+  <h3>Text to Excel</h3>
+  <ol>
+    <li>Paste your text or upload a .txt or .csv file.</li>
+    <li>Choose how columns should be separated.</li>
+    <li>Check the spreadsheet preview.</li>
+    <li>Download your Excel workbook.</li>
+  </ol>
+
+  <h3>Excel to Text</h3>
+  <ol>
+    <li>Open the Excel to Text tab.</li>
+    <li>Upload your .xlsx or .xls workbook.</li>
+    <li>Choose a worksheet to preview.</li>
+    <li>Select Plain Text, CSV, JSON or Markdown.</li>
+    <li>Click Convert all sheets.</li>
+    <li>Copy or download the converted output.</li>
+  </ol>
+
+  <h2>Frequently asked questions</h2>
+
+  <h3>Is Text2Excel free?</h3>
+  <p>Yes. The converter is free to use.</p>
+
+  <h3>Are my files uploaded to a server?</h3>
+  <p>No. The conversion takes place locally in your browser. Your files are not sent to our server by the conversion code.</p>
+
+  <h3>Can I convert Excel to JSON?</h3>
+  <p>Yes. You can convert all worksheets into a JSON object, with each worksheet represented separately.</p>
+
+  <h3>Can I convert multiple Excel sheets?</h3>
+  <p>Yes. All worksheets in the uploaded workbook are imported and converted.</p>
+
+  <h3>Which Excel formats are supported?</h3>
+  <p>The tool accepts .xlsx, .xls, .xlsm and .xlsb files supported by the SheetJS library.</p>
+</section>
+
+</main>
+
+<footer>
+  Built with <a href="https://sheetjs.com/">SheetJS</a>.
+  All conversion happens in your browser.
+</footer>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
 (function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var PREVIEW_ROWS = 200;
-  var DELIMS = { tab: "\t", comma: ",", semicolon: ";", pipe: "|" };
-  var data = [];
+"use strict";
 
-  /* ---------- Parsing ---------- */
+var $ = function (id) {
+  return document.getElementById(id);
+};
 
-  // Delimited text with support for "quoted, fields" and "" escapes.
-  function parseDelimited(text, d) {
-    var rows = [], row = [], field = "", inQ = false;
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i];
-      if (inQ) {
-        if (c === '"') {
-          if (text[i + 1] === '"') { field += '"'; i++; } else { inQ = false; }
-        } else { field += c; }
-      } else if (c === '"' && field === "") {
-        inQ = true;
-      } else if (c === d) {
-        row.push(field); field = "";
-      } else if (c === "\n" || c === "\r") {
-        if (c === "\r" && text[i + 1] === "\n") i++;
-        row.push(field); rows.push(row); row = []; field = "";
+var PREVIEW_ROWS = 200;
+var DELIMS = {
+  tab: "\t",
+  comma: ",",
+  semicolon: ";",
+  pipe: "|"
+};
+
+var data = [];
+var workbook = null;
+var convertedOutput = "";
+var outputExtension = "txt";
+
+/* ---------- Navigation ---------- */
+
+function switchTab(which) {
+  var textActive = which === "text";
+
+  $("textTab").classList.toggle("active", textActive);
+  $("excelTab").classList.toggle("active", !textActive);
+
+  $("textTab").setAttribute("aria-selected", String(textActive));
+  $("excelTab").setAttribute("aria-selected", String(!textActive));
+
+  $("textPanel").hidden = !textActive;
+  $("excelPanel").hidden = textActive;
+}
+
+$("textTab").addEventListener("click", function () {
+  switchTab("text");
+});
+
+$("excelTab").addEventListener("click", function () {
+  switchTab("excel");
+});
+
+/* ---------- Text to Excel parsing ---------- */
+
+function parseDelimited(text, delimiter) {
+  var rows = [];
+  var row = [];
+  var field = "";
+  var inQuotes = false;
+
+  for (var i = 0; i < text.length; i++) {
+    var c = text[i];
+
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
       } else {
         field += c;
       }
-    }
-    if (field !== "" || row.length) { row.push(field); rows.push(row); }
-    return rows;
-  }
-
-  function splitLines(text) { return text.split(/\r\n|\r|\n/); }
-
-  function detect(text) {
-    var lines = splitLines(text).filter(function (l) { return l.trim(); }).slice(0, 20);
-    if (!lines.length) return "none";
-    var names = Object.keys(DELIMS), i, n;
-    // 1) A separator that appears the same number of times on every line.
-    for (i = 0; i < names.length; i++) {
-      var ch = DELIMS[names[i]];
-      var counts = lines.map(function (l) { return l.split(ch).length - 1; });
-      if (counts[0] > 0 && counts.every(function (x) { return x === counts[0]; })) return names[i];
-    }
-    // 2) A separator that appears on most lines.
-    var best = null, bestScore = 0;
-    for (i = 0; i < names.length; i++) {
-      var c2 = DELIMS[names[i]];
-      var hits = lines.filter(function (l) { return l.indexOf(c2) !== -1; }).length / lines.length;
-      if (hits > bestScore) { bestScore = hits; best = names[i]; }
-    }
-    if (best && bestScore >= 0.6) return best;
-    // 3) Columns separated by runs of spaces.
-    if (lines.some(function (l) { return /\S {2,}\S/.test(l); })) return "spaces";
-    return "none";
-  }
-
-  function parse(text) {
-    var mode = $("delim").value;
-    if (mode === "auto") mode = detect(text);
-    var rows;
-    if (DELIMS[mode]) {
-      rows = parseDelimited(text, DELIMS[mode]);
-    } else if (mode === "spaces") {
-      rows = splitLines(text).map(function (l) { return l.trim().split(/ {2,}|\t/); });
-    } else if (mode === "space") {
-      rows = splitLines(text).map(function (l) { return l.trim().split(/ +/); });
-    } else if (mode === "custom") {
-      var sep = $("custom").value;
-      if (!sep) {
-        rows = splitLines(text).map(function (l) { return [l]; });
-      } else if (sep.length === 1) {
-        rows = parseDelimited(text, sep);
-      } else {
-        rows = splitLines(text).map(function (l) { return l.split(sep); });
-      }
+    } else if (c === '"' && field === "") {
+      inQuotes = true;
+    } else if (c === delimiter) {
+      row.push(field);
+      field = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
     } else {
-      rows = splitLines(text).map(function (l) { return [l]; });
+      field += c;
     }
+  }
 
-    if ($("trim").checked) {
-      rows = rows.map(function (r) { return r.map(function (c) { return c.trim(); }); });
+  if (field !== "" || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function splitLines(text) {
+  return text.split(/\r\n|\r|\n/);
+}
+
+function detect(text) {
+  var lines = splitLines(text)
+    .filter(function (line) { return line.trim(); })
+    .slice(0, 20);
+
+  if (!lines.length) return "none";
+
+  var names = Object.keys(DELIMS);
+
+  for (var i = 0; i < names.length; i++) {
+    var ch = DELIMS[names[i]];
+    var counts = lines.map(function (line) {
+      return line.split(ch).length - 1;
+    });
+
+    if (counts[0] > 0 &&
+        counts.every(function (x) { return x === counts[0]; })) {
+      return names[i];
     }
-    if ($("skipEmpty").checked) {
-      rows = rows.filter(function (r) { return r.some(function (c) { return c !== ""; }); });
+  }
+
+  var best = null;
+  var bestScore = 0;
+
+  for (var j = 0; j < names.length; j++) {
+    var separator = DELIMS[names[j]];
+    var hits = lines.filter(function (line) {
+      return line.indexOf(separator) !== -1;
+    }).length / lines.length;
+
+    if (hits > bestScore) {
+      bestScore = hits;
+      best = names[j];
     }
-    if ($("numbers").checked) {
-      rows = rows.map(function (r) {
-        return r.map(function (c) {
-          // Keep values like 007 or phone numbers with a leading zero as text.
-          return /^-?(0|[1-9]\d*)(\.\d+)?$/.test(c) ? Number(c) : c;
-        });
+  }
+
+  if (best && bestScore >= 0.6) return best;
+
+  if (lines.some(function (line) {
+    return /\S {2,}\S/.test(line);
+  })) return "spaces";
+
+  return "none";
+}
+
+function parse(text) {
+  var mode = $("delim").value;
+
+  if (mode === "auto") mode = detect(text);
+
+  var rows;
+
+  if (DELIMS[mode]) {
+    rows = parseDelimited(text, DELIMS[mode]);
+  } else if (mode === "spaces") {
+    rows = splitLines(text).map(function (line) {
+      return line.trim().split(/ {2,}|\t/);
+    });
+  } else if (mode === "space") {
+    rows = splitLines(text).map(function (line) {
+      return line.trim().split(/ +/);
+    });
+  } else if (mode === "custom") {
+    var sep = $("custom").value;
+
+    if (!sep) {
+      rows = splitLines(text).map(function (line) {
+        return [line];
+      });
+    } else if (sep.length === 1) {
+      rows = parseDelimited(text, sep);
+    } else {
+      rows = splitLines(text).map(function (line) {
+        return line.split(sep);
       });
     }
+  } else {
+    rows = splitLines(text).map(function (line) {
+      return [line];
+    });
+  }
+
+  if ($("trim").checked) {
+    rows = rows.map(function (row) {
+      return row.map(function (cell) { return cell.trim(); });
+    });
+  }
+
+  if ($("skipEmpty").checked) {
+    rows = rows.filter(function (row) {
+      return row.some(function (cell) { return cell !== ""; });
+    });
+  }
+
+  if ($("numbers").checked) {
+    rows = rows.map(function (row) {
+      return row.map(function (cell) {
+        if (/^-?(0|[1-9]\d*)(\.\d+)?$/.test(cell)) {
+          return Number(cell);
+        }
+        return cell;
+      });
+    });
+  }
+
+  return rows;
+}
+
+function colLetter(n) {
+  var result = "";
+
+  for (n = n + 1; n > 0; n = Math.floor((n - 1) / 26)) {
+    result = String.fromCharCode(65 + ((n - 1) % 26)) + result;
+  }
+
+  return result;
+}
+
+/* ---------- Text to Excel preview ---------- */
+
+function render() {
+  var text = $("input").value;
+
+  $("count").textContent = text
+    ? text.length.toLocaleString() + " characters"
+    : "";
+
+  data = text.trim() ? parse(text) : [];
+
+  var preview = $("preview");
+  var notice = $("notice");
+
+  preview.textContent = "";
+  notice.hidden = true;
+
+  if (!data.length) {
+    var empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Paste text on the left and your sheet will appear here.";
+    preview.appendChild(empty);
+
+    $("status").textContent = "No data yet";
+    $("download").disabled = true;
+    return;
+  }
+
+  var cols = data.reduce(function (max, row) {
+    return Math.max(max, row.length);
+  }, 0);
+
+  var shown = data.slice(0, PREVIEW_ROWS);
+
+  var wrap = document.createElement("div");
+  wrap.className = "grid-scroll";
+
+  var table = document.createElement("table");
+  table.className = "sheet";
+
+  var thead = document.createElement("thead");
+  var headerRow = document.createElement("tr");
+  headerRow.appendChild(document.createElement("th"));
+
+  for (var c = 0; c < cols; c++) {
+    var th = document.createElement("th");
+    th.scope = "col";
+    th.textContent = colLetter(c);
+    headerRow.appendChild(th);
+  }
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement("tbody");
+
+  shown.forEach(function (row, i) {
+    var tr = document.createElement("tr");
+
+    if (i === 0 && $("header").checked) {
+      tr.className = "is-header";
+    }
+
+    var rowHeader = document.createElement("th");
+    rowHeader.scope = "row";
+    rowHeader.textContent = String(i + 1);
+    tr.appendChild(rowHeader);
+
+    for (var c = 0; c < cols; c++) {
+      var td = document.createElement("td");
+      var value = row[c];
+
+      if (value !== undefined) {
+        td.textContent = String(value);
+
+        if (typeof value === "number") {
+          td.className = "num";
+        }
+      }
+
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  preview.appendChild(wrap);
+
+  $("status").textContent =
+    data.length.toLocaleString() + " rows × " + cols +
+    " column" + (cols === 1 ? "" : "s");
+
+  $("download").disabled = false;
+
+  if (data.length > PREVIEW_ROWS) {
+    notice.textContent =
+      "Showing the first " + PREVIEW_ROWS + " of " +
+      data.length.toLocaleString() +
+      " rows. The download includes every row.";
+
+    notice.hidden = false;
+  }
+}
+
+/* ---------- Text to Excel download ---------- */
+
+function safeSheetName(name) {
+  var s = name.replace(/[\[\]:*?/\\]/g, "").trim().slice(0, 31);
+  return s || "Sheet1";
+}
+
+function safeFileName(name) {
+  var s = name.replace(/[\\/:*?"<>|]/g, "").trim();
+  return (s || "converted").replace(/\.xlsx$/i, "");
+}
+
+function download() {
+  if (!data.length) return;
+
+  if (typeof XLSX === "undefined") {
+    alert("The Excel library did not load. Reload the page and try again.");
+    return;
+  }
+
+  var ws = XLSX.utils.aoa_to_sheet(data);
+  var cols = data.reduce(function (max, row) {
+    return Math.max(max, row.length);
+  }, 0);
+
+  var widths = [];
+
+  for (var c = 0; c < cols; c++) {
+    var max = 8;
+
+    for (var r = 0; r < data.length; r++) {
+      var value = data[r][c];
+
+      if (value !== undefined && value !== null) {
+        max = Math.max(max, String(value).length + 2);
+      }
+    }
+
+    widths.push({ wch: Math.min(max, 60) });
+  }
+
+  ws["!cols"] = widths;
+
+  var wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws,
+    safeSheetName($("sheetName").value)
+  );
+
+  XLSX.writeFile(
+    wb,
+    safeFileName($("fileName").value) + ".xlsx"
+  );
+}
+
+/* ---------- Excel to Text ---------- */
+
+function safeTextFileName(name) {
+  return (name || "converted")
+    .replace(/[\\/:*?"<>|]/g, "")
+    .trim() || "converted";
+}
+
+function quoteCSV(value) {
+  var text = String(value == null ? "" : value);
+
+  if (/[",\r\n]/.test(text)) {
+    return '"' + text.replace(/"/g, '""') + '"';
+  }
+
+  return text;
+}
+
+function makeHeaders(rows) {
+  var first = rows[0] || [];
+
+  return first.map(function (value, index) {
+    var name = String(value == null ? "" : value).trim();
+    return name || ("Column " + (index + 1));
+  });
+}
+
+function uniqueHeaders(headers) {
+  var seen = {};
+
+  return headers.map(function (header) {
+    var name = header;
+    var count = 1;
+
+    while (seen[name]) {
+      count++;
+      name = header + "_" + count;
+    }
+
+    seen[name] = true;
+    return name;
+  });
+}
+
+function rowsToJSON(rows, hasHeader) {
+  if (!rows.length) return [];
+
+  if (!hasHeader) {
     return rows;
   }
 
-  /* ---------- Preview ---------- */
+  var headers = uniqueHeaders(makeHeaders(rows));
+  var result = [];
 
-  function colLetter(n) {
-    var s = "";
-    for (n = n + 1; n > 0; n = Math.floor((n - 1) / 26)) {
-      s = String.fromCharCode(65 + ((n - 1) % 26)) + s;
-    }
-    return s;
-  }
+  rows.slice(1).forEach(function (row) {
+    var obj = {};
 
-  function render() {
-    var text = $("input").value;
-    $("count").textContent = text ? text.length.toLocaleString() + " characters" : "";
-    data = text.trim() ? parse(text) : [];
-
-    var preview = $("preview");
-    var notice = $("notice");
-    preview.textContent = "";
-    notice.hidden = true;
-
-    if (!data.length) {
-      var empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "Paste text on the left and your sheet will appear here.";
-      preview.appendChild(empty);
-      $("status").textContent = "No data yet";
-      $("download").disabled = true;
-      return;
-    }
-
-    var cols = data.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
-    var shown = data.slice(0, PREVIEW_ROWS);
-
-    var wrap = document.createElement("div");
-    wrap.className = "grid-scroll";
-    var table = document.createElement("table");
-    table.className = "sheet";
-
-    var thead = document.createElement("thead");
-    var hr = document.createElement("tr");
-    hr.appendChild(document.createElement("th"));
-    for (var c = 0; c < cols; c++) {
-      var th = document.createElement("th");
-      th.scope = "col";
-      th.textContent = colLetter(c);
-      hr.appendChild(th);
-    }
-    thead.appendChild(hr);
-    table.appendChild(thead);
-
-    var tbody = document.createElement("tbody");
-    shown.forEach(function (row, i) {
-      var tr = document.createElement("tr");
-      if (i === 0 && $("header").checked) tr.className = "is-header";
-      var rh = document.createElement("th");
-      rh.scope = "row";
-      rh.textContent = String(i + 1);
-      tr.appendChild(rh);
-      for (var c = 0; c < cols; c++) {
-        var td = document.createElement("td");
-        var v = row[c];
-        if (v !== undefined) {
-          td.textContent = String(v);
-          if (typeof v === "number") td.className = "num";
-        }
-        tr.appendChild(td);
-      }
-      tbody.appendChild(tr);
+    headers.forEach(function (header, index) {
+      obj[header] = row[index] == null ? "" : row[index];
     });
-    table.appendChild(tbody);
-    wrap.appendChild(table);
-    preview.appendChild(wrap);
 
-    $("status").textContent = data.length.toLocaleString() + " rows × " + cols + " column" + (cols === 1 ? "" : "s");
-    $("download").disabled = false;
+    result.push(obj);
+  });
 
-    if (data.length > PREVIEW_ROWS) {
-      notice.textContent = "Showing the first " + PREVIEW_ROWS + " of " + data.length.toLocaleString() + " rows. The download includes every row.";
-      notice.hidden = false;
+  return result;
+}
+
+function rowsToPlain(rows) {
+  return rows.map(function (row) {
+    return row.map(function (value) {
+      return String(value == null ? "" : value);
+    }).join("\t");
+  }).join("\n");
+}
+
+function rowsToCSV(rows) {
+  return rows.map(function (row) {
+    return row.map(quoteCSV).join(",");
+  }).join("\r\n");
+}
+
+function rowsToMarkdown(rows, hasHeader) {
+  if (!rows.length) return "";
+
+  var cols = rows.reduce(function (max, row) {
+    return Math.max(max, row.length);
+  }, 0);
+
+  var headers;
+  var body;
+
+  if (hasHeader) {
+    headers = makeHeaders(rows);
+    body = rows.slice(1);
+  } else {
+    headers = [];
+
+    for (var i = 0; i < cols; i++) {
+      headers.push("Column " + (i + 1));
     }
+
+    body = rows;
   }
 
-  /* ---------- Download ---------- */
-
-  function safeSheetName(name) {
-    var s = name.replace(/[\[\]:*?\/\\]/g, "").trim().slice(0, 31);
-    return s || "Sheet1";
-  }
-  function safeFileName(name) {
-    var s = name.replace(/[\\\/:*?"<>|]/g, "").trim();
-    return (s || "converted").replace(/\.xlsx$/i, "");
+  function escapeCell(value) {
+    return String(value == null ? "" : value)
+      .replace(/\|/g, "\\|")
+      .replace(/\r?\n/g, "<br>");
   }
 
-  function download() {
-    if (!data.length) return;
-    if (typeof XLSX === "undefined") {
-      alert("The Excel library did not load. Check your internet connection and reload the page.");
-      return;
-    }
-    var ws = XLSX.utils.aoa_to_sheet(data);
-    var cols = data.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
-    var widths = [];
+  var lines = [];
+
+  lines.push("| " + headers.map(escapeCell).join(" | ") + " |");
+  lines.push("| " + headers.map(function () {
+    return "---";
+  }).join(" | ") + " |");
+
+  body.forEach(function (row) {
+    var cells = [];
+
     for (var c = 0; c < cols; c++) {
-      var max = 8;
-      for (var r = 0; r < data.length; r++) {
-        var v = data[r][c];
-        if (v !== undefined && v !== null) max = Math.max(max, String(v).length + 2);
-      }
-      widths.push({ wch: Math.min(max, 60) });
+      cells.push(escapeCell(row[c]));
     }
-    ws["!cols"] = widths;
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, safeSheetName($("sheetName").value));
-    XLSX.writeFile(wb, safeFileName($("fileName").value) + ".xlsx");
+
+    lines.push("| " + cells.join(" | ") + " |");
+  });
+
+  return lines.join("\n");
+}
+
+function convertSheet(rows, format, hasHeader) {
+  if (format === "csv") return rowsToCSV(rows);
+  if (format === "json") return JSON.stringify(rowsToJSON(rows, hasHeader), null, 2);
+  if (format === "markdown") return rowsToMarkdown(rows, hasHeader);
+  return rowsToPlain(rows);
+}
+
+function convertAllSheets() {
+  if (!workbook) return;
+
+  var format = $("outputFormat").value;
+  var hasHeader = $("excelHeader").checked;
+  var result = {};
+  var sections = [];
+
+  workbook.SheetNames.forEach(function (sheetName) {
+    var sheet = workbook.Sheets[sheetName];
+
+    var rows = XLSX.utils.sheet_to_json(sheet, {
+      header: 1,
+      defval: "",
+      raw: false,
+      blankrows: true
+    });
+
+    result[sheetName] = convertSheet(rows, format, hasHeader);
+    sections.push(result[sheetName]);
+  });
+
+  if (format === "json") {
+    convertedOutput = JSON.stringify(result, null, 2);
+  } else {
+    convertedOutput = workbook.SheetNames.map(function (name) {
+      return "===== " + name + " =====\n\n" + result[name];
+    }).join("\n\n\n");
   }
 
-  /* ---------- Wiring ---------- */
+  outputExtension = format === "plain" ? "txt" :
+                    format === "markdown" ? "md" : format;
 
-  var SAMPLE = "Name,Age,City,Score\nAna,28,Lisbon,91.5\nOmar,34,Cairo,84\n\"Smith, Jo\",41,\"New York\",77.25\nLeila,23,Tunis,95";
+  $("excelOutput").value = convertedOutput;
 
-  ["input", "delim", "custom", "header", "numbers", "skipEmpty", "trim"].forEach(function (id) {
-    $(id).addEventListener("input", render);
-    $(id).addEventListener("change", render);
-  });
-  $("delim").addEventListener("change", function () {
-    $("customWrap").hidden = $("delim").value !== "custom";
-  });
-  $("download").addEventListener("click", download);
-  $("sample").addEventListener("click", function () { $("input").value = SAMPLE; render(); });
-  $("clear").addEventListener("click", function () { $("input").value = ""; render(); $("input").focus(); });
-  $("file").addEventListener("change", function (e) {
-    var f = e.target.files[0];
-    if (!f) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      $("input").value = String(reader.result);
-      $("fileName").value = f.name.replace(/\.[^.]+$/, "") || "converted";
-      render();
-    };
-    reader.readAsText(f);
-    e.target.value = "";
+  $("outputStatus").textContent =
+    workbook.SheetNames.length + " worksheet(s) converted to " +
+    format.toUpperCase() + ".";
+
+  $("copyOutput").disabled = !convertedOutput;
+  $("downloadOutput").disabled = !convertedOutput;
+
+  $("copyStatus").textContent =
+    "All worksheets have been converted.";
+}
+
+function renderExcelPreview() {
+  if (!workbook) return;
+
+  var sheetName = $("sheetSelect").value;
+  var sheet = workbook.Sheets[sheetName];
+
+  if (!sheet) return;
+
+  var rows = XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    defval: "",
+    raw: false,
+    blankrows: true
   });
 
+  var preview = $("excelPreview");
+  preview.textContent = "";
+
+  if (!rows.length) {
+    var empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "This worksheet is empty.";
+    preview.appendChild(empty);
+
+    $("excelPreviewStatus").textContent = sheetName + " - Empty";
+    return;
+  }
+
+  var cols = rows.reduce(function (max, row) {
+    return Math.max(max, row.length);
+  }, 0);
+
+  var wrap = document.createElement("div");
+  wrap.className = "grid-scroll";
+
+  var table = document.createElement("table");
+  table.className = "sheet";
+
+  var thead = document.createElement("thead");
+  var headerRow = document.createElement("tr");
+  headerRow.appendChild(document.createElement("th"));
+
+  for (var c = 0; c < cols; c++) {
+    var th = document.createElement("th");
+    th.textContent = colLetter(c);
+    headerRow.appendChild(th);
+  }
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement("tbody");
+
+  rows.slice(0, PREVIEW_ROWS).forEach(function (row, index) {
+    var tr = document.createElement("tr");
+
+    if (index === 0 && $("excelHeader").checked) {
+      tr.className = "is-header";
+    }
+
+    var rh = document.createElement("th");
+    rh.textContent = String(index + 1);
+    tr.appendChild(rh);
+
+    for (var c = 0; c < cols; c++) {
+      var td = document.createElement("td");
+      var value = row[c];
+
+      td.textContent = value == null ? "" : String(value);
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  preview.appendChild(wrap);
+
+  $("excelPreviewStatus").textContent =
+    sheetName + " · " + rows.length.toLocaleString() +
+    " rows × " + cols + " columns" +
+    (rows.length > PREVIEW_ROWS ? " · Preview limited to first 200 rows" : "");
+}
+
+function loadExcelFile(file) {
+  if (!file) return;
+
+  if (typeof XLSX === "undefined") {
+    $("excelStatus").textContent =
+      "Excel library failed to load. Please reload the page.";
+    return;
+  }
+
+  var allowed = /\.(xlsx|xls|xlsm|xlsb)$/i;
+
+  if (!allowed.test(file.name)) {
+    $("excelStatus").textContent =
+      "Please select a supported Excel file.";
+    return;
+  }
+
+  $("excelStatus").textContent = "Reading workbook...";
+
+  var reader = new FileReader();
+
+  reader.onload = function (event) {
+    try {
+      var bytes = new Uint8Array(event.target.result);
+
+      workbook = XLSX.read(bytes, {
+        type: "array",
+        cellDates: true
+      });
+
+      if (!workbook.SheetNames.length) {
+        throw new Error("No worksheets were found.");
+      }
+
+      $("excelFileName").textContent = file.name;
+      $("excelStatus").textContent =
+        workbook.SheetNames.length + " worksheet(s) loaded successfully.";
+
+      var select = $("sheetSelect");
+      select.textContent = "";
+
+      workbook.SheetNames.forEach(function (name) {
+        var option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+
+      select.disabled = false;
+      $("outputFormat").disabled = false;
+      $("excelHeader").disabled = false;
+      $("convertExcel").disabled = false;
+      $("clearExcel").disabled = false;
+
+      $("excelOutput").value = "";
+      convertedOutput = "";
+
+      $("copyOutput").disabled = true;
+      $("downloadOutput").disabled = true;
+
+      $("outputStatus").textContent =
+        "Select a format and click Convert all sheets.";
+
+      $("copyStatus").textContent = "";
+
+      renderExcelPreview();
+
+    } catch (error) {
+      workbook = null;
+
+      $("excelStatus").textContent =
+        "Unable to read this workbook: " + error.message;
+
+      $("excelFileName").textContent = file.name;
+    }
+  };
+
+  reader.onerror = function () {
+    $("excelStatus").textContent = "Could not read the selected file.";
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+function clearExcel() {
+  workbook = null;
+  convertedOutput = "";
+
+  $("excelFile").value = "";
+  $("excelFileName").textContent = "No file selected";
+  $("excelStatus").textContent = "Upload an Excel file to begin.";
+
+  $("sheetSelect").textContent = "";
+  $("sheetSelect").add(new Option("No workbook loaded", ""));
+  $("sheetSelect").disabled = true;
+
+  $("outputFormat").disabled = true;
+  $("excelHeader").disabled = true;
+  $("convertExcel").disabled = true;
+  $("clearExcel").disabled = true;
+
+  $("excelPreview").innerHTML =
+    '<div class="empty">Upload an Excel workbook to preview its worksheets.</div>';
+
+  $("excelPreviewStatus").textContent = "No workbook loaded";
+
+  $("excelOutput").value = "";
+  $("outputStatus").textContent = "Your converted output will appear here.";
+
+  $("copyOutput").disabled = true;
+  $("downloadOutput").disabled = true;
+  $("copyStatus").textContent = "";
+}
+
+/* ---------- Event listeners ---------- */
+
+[
+  "input",
+  "delim",
+  "custom",
+  "header",
+  "numbers",
+  "skipEmpty",
+  "trim"
+].forEach(function (id) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+});
+
+$("delim").addEventListener("change", function () {
+  $("customWrap").hidden = $("delim").value !== "custom";
+});
+
+$("download").addEventListener("click", download);
+
+var SAMPLE =
+  "Name,Age,City,Score\n" +
+  "Ana,28,Lisbon,91.5\n" +
+  "Omar,34,Cairo,84\n" +
+  "\"Smith, Jo\",41,\"New York\",77.25\n" +
+  "Leila,23,Tunis,95";
+
+$("sample").addEventListener("click", function () {
+  $("input").value = SAMPLE;
   render();
+});
+
+$("clear").addEventListener("click", function () {
+  $("input").value = "";
+  render();
+  $("input").focus();
+});
+
+$("file").addEventListener("change", function (event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+
+  reader.onload = function () {
+    $("input").value = String(reader.result);
+    $("fileName").value =
+      file.name.replace(/\.[^.]+$/, "") || "converted";
+    render();
+  };
+
+  reader.onerror = function () {
+    alert("Could not read this file.");
+  };
+
+  reader.readAsText(file);
+  event.target.value = "";
+});
+
+$("excelFile").addEventListener("change", function (event) {
+  loadExcelFile(event.target.files[0]);
+});
+
+$("sheetSelect").addEventListener("change", renderExcelPreview);
+$("excelHeader").addEventListener("change", renderExcelPreview);
+
+$("convertExcel").addEventListener("click", function () {
+  try {
+    convertAllSheets();
+  } catch (error) {
+    $("excelStatus").textContent =
+      "Conversion failed: " + error.message;
+  }
+});
+
+$("clearExcel").addEventListener("click", clearExcel);
+
+$("copyOutput").addEventListener("click", async function () {
+  if (!convertedOutput) return;
+
+  try {
+    await navigator.clipboard.writeText(convertedOutput);
+    $("copyStatus").textContent = "Copied to clipboard!";
+  } catch (error) {
+    $("excelOutput").focus();
+    $("excelOutput").select();
+
+    try {
+      document.execCommand("copy");
+      $("copyStatus").textContent = "Copied to clipboard!";
+    } catch (fallbackError) {
+      $("copyStatus").textContent =
+        "Copy failed. Please select and copy the text manually.";
+    }
+  }
+});
+
+$("downloadOutput").addEventListener("click", function () {
+  if (!convertedOutput) return;
+
+  var blob = new Blob(
+    [convertedOutput],
+    { type: "text/plain;charset=utf-8" }
+  );
+
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement("a");
+
+  link.href = url;
+  link.download =
+    safeTextFileName($("excelFileName").textContent.replace(/\.[^.]+$/, "")) +
+    "." + outputExtension;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(function () {
+    URL.revokeObjectURL(url);
+  }, 1000);
+});
+
+render();
+
 })();
 </script>
 </body>
